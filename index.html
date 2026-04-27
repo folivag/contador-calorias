@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#FFFFFF" />
+  <title>Contador de Calorías</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Calorías" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="Registra alimentos habituales con foto, código de barras y macros por IA." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true"></span>
+      <h1>Contador de Calorías</h1>
+    </div>
+    <div class="header-actions">
+      <span id="todayDate" class="today-date"></span>
+      <button id="btnSettings" class="icon-btn" title="Configuración" aria-label="Configuración">⚙</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="hoy">Hoy</button>
+    <button class="tab" data-tab="alimentos">Alimentos</button>
+    <button class="tab" data-tab="stats">Estadísticas</button>
+  </nav>
+
+  <main>
+    <!-- ========== TAB: HOY ========== -->
+    <section id="tab-hoy" class="tab-content active">
+      <div id="reminderBanner" class="reminder-banner hidden">
+        <span>📌 No has registrado nada hoy todavía</span>
+        <button id="btnDismissReminder" class="icon-btn">✕</button>
+      </div>
+      <div class="day-summary">
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#84CC16" />
+                <stop offset="100%" stop-color="#10B981" />
+              </linearGradient>
+              <linearGradient id="ringGradOver" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FB7185" />
+                <stop offset="100%" stop-color="#F59E0B" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="60" cy="60" r="50" />
+            <circle id="ringCalories" class="ring-fg" cx="60" cy="60" r="50" />
+          </svg>
+          <div class="ring-text">
+            <strong id="totalCalories">0</strong>
+            <span id="goalCalories">/ 2000 kcal</span>
+          </div>
+        </div>
+        <div class="macro-grid">
+          <div class="macro-card protein">
+            <span class="macro-name">Proteína</span>
+            <span class="macro-value"><strong id="totalProtein">0</strong>g</span>
+            <span class="macro-goal" id="goalProtein">de 150g</span>
+            <div class="macro-bar"><div id="barProtein" class="macro-bar-fill"></div></div>
+          </div>
+          <div class="macro-card carbs">
+            <span class="macro-name">Carbos</span>
+            <span class="macro-value"><strong id="totalCarbs">0</strong>g</span>
+            <span class="macro-goal" id="goalCarbs">de 250g</span>
+            <div class="macro-bar"><div id="barCarbs" class="macro-bar-fill"></div></div>
+          </div>
+          <div class="macro-card fat">
+            <span class="macro-name">Grasas</span>
+            <span class="macro-value"><strong id="totalFat">0</strong>g</span>
+            <span class="macro-goal" id="goalFat">de 65g</span>
+            <div class="macro-bar"><div id="barFat" class="macro-bar-fill"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="meals">
+        <div class="meal" data-meal="desayuno">
+          <div class="meal-head">
+            <h3>🌅 Desayuno</h3>
+            <button class="add-meal-btn" data-meal="desayuno">+ Agregar</button>
+          </div>
+          <ul class="meal-items" id="meal-desayuno"></ul>
+        </div>
+        <div class="meal" data-meal="almuerzo">
+          <div class="meal-head">
+            <h3>☀️ Almuerzo</h3>
+            <button class="add-meal-btn" data-meal="almuerzo">+ Agregar</button>
+          </div>
+          <ul class="meal-items" id="meal-almuerzo"></ul>
+        </div>
+        <div class="meal" data-meal="cena">
+          <div class="meal-head">
+            <h3>🌙 Cena</h3>
+            <button class="add-meal-btn" data-meal="cena">+ Agregar</button>
+          </div>
+          <ul class="meal-items" id="meal-cena"></ul>
+        </div>
+        <div class="meal" data-meal="snack">
+          <div class="meal-head">
+            <h3>🍎 Snacks</h3>
+            <button class="add-meal-btn" data-meal="snack">+ Agregar</button>
+          </div>
+          <ul class="meal-items" id="meal-snack"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TAB: ALIMENTOS ========== -->
+    <section id="tab-alimentos" class="tab-content">
+      <div class="toolbar">
+        <input id="searchFoods" type="search" placeholder="Buscar alimento..." />
+        <button id="btnScan" class="secondary-btn" title="Escanear código de barras">📷 Escanear</button>
+        <button id="btnNewFood" class="primary-btn">+ Nuevo</button>
+      </div>
+      <div id="foodsList" class="foods-grid"></div>
+      <p id="emptyFoods" class="empty hidden">
+        Aún no hay alimentos registrados. Agrega tu primer alimento para empezar.
+      </p>
+    </section>
+
+    <!-- ========== TAB: STATS ========== -->
+    <section id="tab-stats" class="tab-content">
+      <div class="stats-cards">
+        <div class="stat-card">
+          <span class="stat-label">Promedio últimos 7 días</span>
+          <strong id="stat7Avg">0 kcal</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Días registrados</span>
+          <strong id="statDays">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Alimento más usado</span>
+          <strong id="statTopFood">—</strong>
+        </div>
+      </div>
+      <h3>Últimos 7 días</h3>
+      <div id="weekChart" class="week-chart"></div>
+    </section>
+  </main>
+
+  <!-- ========== MODAL: NUEVO/EDITAR ALIMENTO ========== -->
+  <div id="modalFood" class="modal hidden">
+    <div class="modal-content">
+      <header class="modal-head">
+        <h2 id="modalFoodTitle">Nuevo alimento</h2>
+        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+      </header>
+      <form id="formFood">
+        <input type="hidden" id="foodId" />
+
+        <label class="photo-picker">
+          <span>Foto</span>
+          <div id="photoPreview" class="photo-preview">
+            <span>📷 Toca para agregar foto</span>
+          </div>
+          <input type="file" id="foodPhoto" accept="image/*" capture="environment" />
+        </label>
+
+        <label>
+          <span>Nombre <span class="req">*</span></span>
+          <input type="text" id="foodName" required placeholder="Ej: Pechuga de pollo a la plancha" />
+        </label>
+
+        <label>
+          <span>Código de barras <span class="optional">(opcional)</span></span>
+          <div class="barcode-row">
+            <input type="text" id="foodBarcode" placeholder="Vacío o escanea desde la lista" />
+            <button type="button" id="btnScanInModal" class="icon-btn-square" title="Escanear">📷</button>
+          </div>
+        </label>
+
+        <div class="row">
+          <label>
+            <span>Porción <span class="req">*</span></span>
+            <input type="number" id="foodPortion" required step="0.1" min="0" placeholder="100" />
+          </label>
+          <label>
+            <span>Unidad</span>
+            <select id="foodUnit">
+              <option value="g">g</option>
+              <option value="ml">ml</option>
+              <option value="unidad">unidad</option>
+              <option value="taza">taza</option>
+              <option value="cda">cda</option>
+              <option value="cdta">cdta</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="ai-row">
+          <button type="button" id="btnAI" class="ai-btn">✨ Calcular macros con IA</button>
+          <button type="button" id="btnSearchOFF" class="off-btn">🔍 Buscar en Open Food Facts</button>
+        </div>
+        <p id="aiStatus" class="ai-status"></p>
+
+        <div class="row macro-inputs">
+          <label>
+            <span>Calorías</span>
+            <input type="number" id="foodCalories" step="0.1" min="0" placeholder="0" />
+          </label>
+          <label>
+            <span>Proteína (g)</span>
+            <input type="number" id="foodProteinIn" step="0.1" min="0" placeholder="0" />
+          </label>
+        </div>
+        <div class="row">
+          <label>
+            <span>Carbos (g)</span>
+            <input type="number" id="foodCarbsIn" step="0.1" min="0" placeholder="0" />
+          </label>
+          <label>
+            <span>Grasas (g)</span>
+            <input type="number" id="foodFatIn" step="0.1" min="0" placeholder="0" />
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btnDeleteFood" class="danger-btn hidden">Eliminar</button>
+          <button type="button" class="secondary-btn close-modal">Cancelar</button>
+          <button type="submit" class="primary-btn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== MODAL: AGREGAR AL DIARIO ========== -->
+  <div id="modalLog" class="modal hidden">
+    <div class="modal-content">
+      <header class="modal-head">
+        <h2>Agregar a <span id="modalLogMeal">—</span></h2>
+        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+      </header>
+      <div class="log-search-wrap">
+        <div class="log-search-row">
+          <input id="logSearch" type="search" placeholder="Buscar alimento registrado..." autofocus />
+          <button id="btnScanInLog" class="icon-btn-square" title="Escanear y agregar">📷</button>
+        </div>
+      </div>
+      <div id="logFoodsList" class="log-foods-list"></div>
+      <p class="log-hint">Selecciona un alimento, luego ajusta la cantidad.<br><small>O escanea 📷 para agregar un producto nuevo directo al diario.</small></p>
+    </div>
+  </div>
+
+  <!-- ========== MODAL: CANTIDAD ========== -->
+  <div id="modalAmount" class="modal hidden">
+    <div class="modal-content small">
+      <header class="modal-head">
+        <h2 id="modalAmountTitle">Cantidad</h2>
+        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+      </header>
+      <form id="formAmount">
+        <input type="hidden" id="amountFoodId" />
+        <input type="hidden" id="amountMeal" />
+        <p id="amountInfo" class="amount-info"></p>
+        <label>
+          <span>¿Cuánto consumiste?</span>
+          <div class="amount-row">
+            <input type="number" id="amountValue" step="0.1" min="0" required />
+            <span id="amountUnit" class="amount-unit">g</span>
+          </div>
+        </label>
+        <div class="quick-multipliers">
+          <button type="button" class="qmult" data-mult="0.5">½</button>
+          <button type="button" class="qmult" data-mult="1">1×</button>
+          <button type="button" class="qmult" data-mult="1.5">1½</button>
+          <button type="button" class="qmult" data-mult="2">2×</button>
+        </div>
+        <p id="amountPreview" class="amount-preview"></p>
+        <div class="modal-footer">
+          <button type="button" class="secondary-btn close-modal">Cancelar</button>
+          <button type="submit" class="primary-btn">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== MODAL: SETTINGS ========== -->
+  <div id="modalSettings" class="modal hidden">
+    <div class="modal-content">
+      <header class="modal-head">
+        <h2>Configuración</h2>
+        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+      </header>
+      <form id="formSettings">
+        <h3>Objetivos diarios</h3>
+        <button type="button" id="btnOpenCalc" class="calc-btn">📊 Calcular automáticamente según mi cuerpo</button>
+        <div class="row">
+          <label>
+            <span>Calorías</span>
+            <input type="number" id="setGoalCalories" min="0" step="10" />
+          </label>
+          <label>
+            <span>Proteína (g)</span>
+            <input type="number" id="setGoalProtein" min="0" step="1" />
+          </label>
+        </div>
+        <div class="row">
+          <label>
+            <span>Carbos (g)</span>
+            <input type="number" id="setGoalCarbs" min="0" step="1" />
+          </label>
+          <label>
+            <span>Grasas (g)</span>
+            <input type="number" id="setGoalFat" min="0" step="1" />
+          </label>
+        </div>
+
+        <h3>Recordatorios</h3>
+        <label class="checkbox-label">
+          <input type="checkbox" id="setReminderEnabled" />
+          <span>Recordatorio diario para registrar comidas</span>
+        </label>
+        <div class="row">
+          <label>
+            <span>Hora</span>
+            <input type="time" id="setReminderTime" value="21:00" />
+          </label>
+          <label>
+            <span>Estado</span>
+            <button type="button" id="btnRequestNotif" class="secondary-btn full-btn">Solicitar permiso</button>
+          </label>
+        </div>
+        <p class="settings-hint" id="notifStatus"></p>
+
+        <h3>API de IA (Anthropic Claude)</h3>
+        <p class="settings-hint">
+          Necesaria para calcular macros automáticamente al registrar alimentos.
+          Tu clave se guarda solo en este navegador.
+        </p>
+        <label>
+          <span>API Key</span>
+          <input type="password" id="setApiKey" placeholder="sk-ant-..." />
+        </label>
+
+        <h3>Datos</h3>
+        <div class="data-actions">
+          <button type="button" id="btnExport" class="secondary-btn">Exportar datos</button>
+          <button type="button" id="btnImport" class="secondary-btn">Importar datos</button>
+          <input type="file" id="importFile" accept="application/json" hidden />
+          <button type="button" id="btnReset" class="danger-btn">Borrar todo</button>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="secondary-btn close-modal">Cerrar</button>
+          <button type="submit" class="primary-btn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== MODAL: BÚSQUEDA OFF ========== -->
+  <div id="modalOffSearch" class="modal hidden">
+    <div class="modal-content">
+      <header class="modal-head">
+        <h2>Buscar en Open Food Facts</h2>
+        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+      </header>
+      <div class="off-search-body">
+        <div class="off-search-row">
+          <input id="offSearchQuery" type="search" placeholder="Ej: yogur griego, atún natural, granola..." />
+          <button id="btnOffSearchGo" class="primary-btn">Buscar</button>
+        </div>
+        <p id="offSearchStatus" class="ai-status"></p>
+        <div id="offSearchResults" class="off-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL: SCANNER ========== -->
+  <div id="modalScan" class="modal hidden">
+    <div class="modal-content scan-modal">
+      <header class="modal-head">
+        <h2>Escanear código de barras</h2>
+        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+      </header>
+      <div class="scan-body">
+        <div class="scan-video-wrap">
+          <video id="scanVideo" playsinline muted></video>
+          <div class="scan-overlay"></div>
+        </div>
+        <p id="scanStatus" class="scan-status">Apunta la cámara al código...</p>
+        <div class="scan-manual">
+          <label>
+            <span>O ingresa el código manualmente:</span>
+            <div class="barcode-row">
+              <input type="text" id="manualBarcode" inputmode="numeric" placeholder="7501234567890" />
+              <button type="button" id="btnLookupManual" class="primary-btn">Buscar</button>
+            </div>
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="secondary-btn close-modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL: CALCULADORA DE OBJETIVOS ========== -->
+  <div id="modalCalc" class="modal hidden">
+    <div class="modal-content">
+      <header class="modal-head">
+        <h2>Calcular objetivos</h2>
+        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+      </header>
+      <form id="formCalc">
+        <p class="settings-hint">Usa la fórmula Mifflin-St Jeor para calcular tu BMR y TDEE, y reparte los macros según tu meta.</p>
+
+        <div class="row">
+          <label>
+            <span>Sexo</span>
+            <select id="calcSex">
+              <option value="male">Hombre</option>
+              <option value="female">Mujer</option>
+            </select>
+          </label>
+          <label>
+            <span>Edad (años)</span>
+            <input type="number" id="calcAge" min="10" max="100" step="1" required />
+          </label>
+        </div>
+        <div class="row">
+          <label>
+            <span>Peso (kg)</span>
+            <input type="number" id="calcWeight" min="20" max="300" step="0.1" required />
+          </label>
+          <label>
+            <span>Altura (cm)</span>
+            <input type="number" id="calcHeight" min="100" max="250" step="1" required />
+          </label>
+        </div>
+        <label>
+          <span>Nivel de actividad</span>
+          <select id="calcActivity">
+            <option value="1.2">Sedentario (poco o nada)</option>
+            <option value="1.375">Ligero (1-3 días/sem)</option>
+            <option value="1.55" selected>Moderado (3-5 días/sem)</option>
+            <option value="1.725">Activo (6-7 días/sem)</option>
+            <option value="1.9">Muy activo (atleta / 2x día)</option>
+          </select>
+        </label>
+        <label>
+          <span>Meta</span>
+          <select id="calcGoal">
+            <option value="cut-aggr">Pérdida agresiva (-25%)</option>
+            <option value="cut">Pérdida moderada (-15%)</option>
+            <option value="maintain" selected>Mantener peso</option>
+            <option value="bulk">Aumentar masa (+10%)</option>
+            <option value="bulk-aggr">Aumentar agresivo (+20%)</option>
+          </select>
+        </label>
+        <label>
+          <span>Proteína (g por kg de peso)</span>
+          <select id="calcProteinRatio">
+            <option value="1.6">1.6 (mínimo activos)</option>
+            <option value="1.8" selected>1.8 (recomendado)</option>
+            <option value="2.0">2.0 (definición)</option>
+            <option value="2.2">2.2 (atletas)</option>
+          </select>
+        </label>
+
+        <div id="calcResult" class="calc-result hidden">
+          <div class="calc-line"><span>BMR</span><strong id="calcBMR">—</strong></div>
+          <div class="calc-line"><span>TDEE</span><strong id="calcTDEE">—</strong></div>
+          <div class="calc-line big"><span>Objetivo de calorías</span><strong id="calcCal">—</strong></div>
+          <div class="calc-macros">
+            <div><span>Proteína</span><strong id="calcProt">—</strong></div>
+            <div><span>Carbos</span><strong id="calcCarbs">—</strong></div>
+            <div><span>Grasas</span><strong id="calcFat">—</strong></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="secondary-btn close-modal">Cancelar</button>
+          <button type="button" id="btnCalcCompute" class="secondary-btn">Calcular</button>
+          <button type="submit" id="btnCalcApply" class="primary-btn" disabled>Aplicar como objetivos</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

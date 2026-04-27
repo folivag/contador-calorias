@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generador de iconos PNG</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      margin: 0;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 { color: #10b981; margin-top: 0; }
+    p { line-height: 1.6; }
+    button {
+      background: #10b981;
+      color: #0f172a;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      margin: 10px 5px 10px 0;
+    }
+    button:hover { background: #059669; }
+    button.alt { background: #334155; color: #f1f5f9; }
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .preview-item {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .preview-item canvas {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      background: #fff1;
+    }
+    .preview-item p {
+      margin: 8px 0 4px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .preview-item small {
+      color: #64748b;
+      font-size: 11px;
+    }
+    code {
+      background: #1e293b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .note {
+      background: #1e293b;
+      padding: 14px;
+      border-radius: 8px;
+      border-left: 3px solid #10b981;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>📐 Generador de iconos PNG</h1>
+  <p>Esta herramienta genera todos los tamaños de iconos PNG que necesitas a partir del <code>icon.svg</code>. Click en "Generar y descargar" → guarda los archivos en la carpeta <code>icons/</code> del proyecto.</p>
+
+  <div class="note">
+    <strong>Sizes que genera:</strong> 48, 72, 96, 144, 180 (iOS), 192, 256, 384, 512, 1024 (Capacitor source). También dos versiones <em>maskable</em> (con padding interior para Android adaptive).
+  </div>
+
+  <button id="btnGenerate">▶ Generar y previsualizar</button>
+  <button id="btnDownloadAll" class="alt" disabled>⬇ Descargar todos</button>
+
+  <div id="previews" class="preview-grid"></div>
+
+  <script>
+    const SIZES = [
+      { size: 48,   name: 'icon-48.png' },
+      { size: 72,   name: 'icon-72.png' },
+      { size: 96,   name: 'icon-96.png' },
+      { size: 144,  name: 'icon-144.png' },
+      { size: 180,  name: 'icon-180.png' },          // Apple touch
+      { size: 192,  name: 'icon-192.png' },
+      { size: 256,  name: 'icon-256.png' },
+      { size: 384,  name: 'icon-384.png' },
+      { size: 512,  name: 'icon-512.png' },
+      { size: 1024, name: 'icon-1024.png' },         // Capacitor source
+      { size: 192,  name: 'icon-192-maskable.png', maskable: true },
+      { size: 512,  name: 'icon-512-maskable.png', maskable: true },
+    ];
+
+    const generated = [];
+
+    async function loadSVG() {
+      const res = await fetch('../icon.svg');
+      if (!res.ok) throw new Error('No se pudo cargar ../icon.svg');
+      const text = await res.text();
+      return text;
+    }
+
+    function svgToImage(svgText) {
+      return new Promise((resolve, reject) => {
+        const blob = new Blob([svgText], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = reject;
+        img.src = url;
+      });
+    }
+
+    function renderToCanvas(img, size, maskable) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      // Fondo (importante para maskable)
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, size, size);
+      if (maskable) {
+        // Safe area: el icono ocupa solo el 80% central
+        const inner = size * 0.8;
+        const offset = (size - inner) / 2;
+        ctx.drawImage(img, offset, offset, inner, inner);
+      } else {
+        ctx.drawImage(img, 0, 0, size, size);
+      }
+      return canvas;
+    }
+
+    function downloadCanvas(canvas, name) {
+      return new Promise(resolve => {
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => { URL.revokeObjectURL(url); resolve(); }, 100);
+        }, 'image/png');
+      });
+    }
+
+    document.getElementById('btnGenerate').addEventListener('click', async () => {
+      try {
+        const svgText = await loadSVG();
+        const img = await svgToImage(svgText);
+        const previews = document.getElementById('previews');
+        previews.innerHTML = '';
+        generated.length = 0;
+
+        for (const { size, name, maskable } of SIZES) {
+          const canvas = renderToCanvas(img, size, maskable);
+          generated.push({ canvas, name });
+
+          const item = document.createElement('div');
+          item.className = 'preview-item';
+          const displaySize = Math.min(size, 128);
+          const displayCanvas = canvas.cloneNode(true);
+          displayCanvas.getContext('2d').drawImage(canvas, 0, 0);
+          displayCanvas.style.width = displaySize + 'px';
+          displayCanvas.style.height = displaySize + 'px';
+          item.appendChild(displayCanvas);
+          item.innerHTML += `<p>${name}</p><small>${size}×${size}${maskable ? ' (maskable)' : ''}</small>`;
+          previews.appendChild(item);
+        }
+
+        document.getElementById('btnDownloadAll').disabled = false;
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    });
+
+    document.getElementById('btnDownloadAll').addEventListener('click', async () => {
+      for (const { canvas, name } of generated) {
+        await downloadCanvas(canvas, name);
+        await new Promise(r => setTimeout(r, 200)); // dar tiempo al navegador entre descargas
+      }
+      alert('✓ Listo. Mueve los PNG descargados a la carpeta /icons/ del proyecto.');
+    });
+  </script>
+</body>
+</html>

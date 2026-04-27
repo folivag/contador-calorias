@@ -1,0 +1,13 @@
+{
+  "appId": "com.felipeoliva.contadorcalorias",
+  "appName": "Contador de Calorías",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Contador de Calorías",
+  "short_name": "Calorías",
+  "description": "Registra alimentos habituales con foto, código de barras y macros por IA.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "orientation": "portrait",
+  "lang": "es",
+  "categories": ["health", "lifestyle", "food"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Escanear alimento",
+      "short_name": "Escanear",
+      "description": "Escanea un código de barras y agrégalo al diario",
+      "url": "./?action=scan",
+      "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}
