@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="theme-color" content="#0A0E14" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0A0E14" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="color-scheme" content="dark" />
   <title>Contador de Calorías</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
   <link rel="apple-touch-icon" href="icon.svg" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Calorías" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="description" content="Registra alimentos habituales con foto, código de barras y macros por IA." />
@@ -18,8 +19,76 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    (function() {
+      try {
+        var raw = localStorage.getItem('cal-counter-auth-v1');
+        var auth = raw ? JSON.parse(raw) : null;
+        if (!auth || !auth.user) {
+          document.documentElement.classList.add('app-locked');
+        }
+      } catch (e) {
+        document.documentElement.classList.add('app-locked');
+      }
+    })();
+  </script>
 </head>
 <body>
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-bg-orb orb-a"></div>
+    <div class="login-bg-orb orb-b"></div>
+    <div class="login-card">
+      <div class="login-brand">
+        <span class="brand-icon login-brand-icon" aria-hidden="true"></span>
+        <h1>Contador de Calorías</h1>
+        <p class="login-tag">Lleva el control de tu nutrición</p>
+      </div>
+
+      <div class="social-buttons">
+        <button type="button" class="social-btn" data-provider="google">
+          <span class="social-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#fff" d="M21.6 12.227c0-.709-.064-1.39-.182-2.045H12v3.868h5.382a4.6 4.6 0 0 1-1.996 3.018v2.51h3.232c1.89-1.741 2.982-4.305 2.982-7.351z"/><path fill="#fff" opacity=".85" d="M12 22c2.7 0 4.964-.895 6.618-2.422l-3.232-2.51c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H3.067v2.59A9.996 9.996 0 0 0 12 22z"/><path fill="#fff" opacity=".7" d="M6.405 13.9a6.012 6.012 0 0 1 0-3.8V7.51H3.067a9.996 9.996 0 0 0 0 8.98l3.338-2.59z"/><path fill="#fff" opacity=".55" d="M12 5.977c1.468 0 2.786.505 3.823 1.495l2.868-2.868C16.96 3.05 14.696 2 12 2A9.996 9.996 0 0 0 3.067 7.51l3.338 2.59C7.19 7.737 9.395 5.977 12 5.977z"/></svg>
+          </span>
+          <span>Continuar con Google</span>
+          <span class="soon-tag">Próximamente</span>
+        </button>
+        <button type="button" class="social-btn" data-provider="apple">
+          <span class="social-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+          </span>
+          <span>Continuar con Apple</span>
+          <span class="soon-tag">Próximamente</span>
+        </button>
+        <button type="button" class="social-btn" data-provider="meta">
+          <span class="social-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95 0-5.52-4.48-10-10-10z"/></svg>
+          </span>
+          <span>Continuar con Meta</span>
+          <span class="soon-tag">Próximamente</span>
+        </button>
+      </div>
+
+      <div class="login-divider"><span>o con tu cuenta</span></div>
+
+      <form id="formLogin" class="login-form">
+        <label>
+          <span>Usuario</span>
+          <input type="text" id="loginUser" autocomplete="username" required placeholder="Admin" />
+        </label>
+        <label>
+          <span>Contraseña</span>
+          <input type="password" id="loginPass" autocomplete="current-password" required placeholder="••••••••" />
+        </label>
+        <p id="loginError" class="login-error hidden"></p>
+        <button type="submit" class="primary-btn login-submit">Ingresar</button>
+        <p class="login-hint">Demo: <strong>Admin</strong> / <strong>contador</strong></p>
+      </form>
+
+      <p class="login-footer">v1.0 · Datos guardados solo en este dispositivo</p>
+    </div>
+  </div>
+
   <header class="app-header">
     <div class="brand">
       <span class="brand-icon" aria-hidden="true"></span>
@@ -28,6 +97,7 @@
     <div class="header-actions">
       <span id="todayDate" class="today-date"></span>
       <button id="btnSettings" class="icon-btn" title="Configuración" aria-label="Configuración">⚙</button>
+      <button id="btnLogout" class="icon-btn" title="Cerrar sesión" aria-label="Cerrar sesión">⏻</button>
     </div>
   </header>
 
@@ -49,12 +119,12 @@
           <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
             <defs>
               <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#84CC16" />
-                <stop offset="100%" stop-color="#10B981" />
+                <stop offset="0%" stop-color="#33EBD2" />
+                <stop offset="100%" stop-color="#00C9AE" />
               </linearGradient>
               <linearGradient id="ringGradOver" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#FB7185" />
-                <stop offset="100%" stop-color="#F59E0B" />
+                <stop offset="0%" stop-color="#FF5C8A" />
+                <stop offset="100%" stop-color="#FFB74D" />
               </linearGradient>
             </defs>
             <circle class="ring-bg" cx="60" cy="60" r="50" />

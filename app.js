@@ -3,6 +3,8 @@
    ============================================================ */
 
 const STORAGE_KEY = 'cal-counter-v1';
+const AUTH_KEY = 'cal-counter-auth-v1';
+const LOCAL_USERS = [{ user: 'Admin', pass: 'contador', name: 'Admin' }];
 const DEFAULT_GOALS = { calories: 2000, protein: 150, carbs: 250, fat: 65 };
 const DEFAULT_REMINDERS = { enabled: false, time: '21:00', dismissedDate: '' };
 const DEFAULT_BODY = { sex: 'male', age: 30, weight: 70, height: 170, activity: 1.55, goal: 'maintain', proteinRatio: 1.8 };
@@ -48,6 +50,75 @@ function save() {
     log: state.log,
     settings: state.settings,
   }));
+}
+
+/* ---------- Auth ---------- */
+function loadAuth() {
+  try {
+    const raw = localStorage.getItem(AUTH_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function saveAuth(auth) {
+  localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+}
+
+function clearAuth() {
+  localStorage.removeItem(AUTH_KEY);
+}
+
+function showLogin() {
+  document.documentElement.classList.add('app-locked');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    const u = document.getElementById('loginUser');
+    if (u) u.focus();
+  }, 100);
+}
+
+function hideLogin() {
+  document.documentElement.classList.remove('app-locked');
+  document.body.style.overflow = '';
+}
+
+function setupLogin(onLoginSuccess) {
+  const form = document.getElementById('formLogin');
+  const errorEl = document.getElementById('loginError');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value;
+    const match = LOCAL_USERS.find(x => x.user === u && x.pass === p);
+    if (!match) {
+      errorEl.textContent = 'Usuario o contraseña incorrectos';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    errorEl.classList.add('hidden');
+    saveAuth({
+      user: { id: match.user.toLowerCase(), name: match.name, provider: 'local' },
+      loggedInAt: Date.now(),
+    });
+    document.getElementById('loginPass').value = '';
+    hideLogin();
+    onLoginSuccess();
+  });
+
+  document.querySelectorAll('.social-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const provider = btn.dataset.provider;
+      const labels = { google: 'Google', apple: 'Apple', meta: 'Meta' };
+      toast(`${labels[provider] || provider}: integración próximamente`, 'info');
+    });
+  });
+}
+
+function logout() {
+  if (!confirm('¿Cerrar sesión?')) return;
+  clearAuth();
+  location.reload();
 }
 
 /* ---------- Helpers ---------- */
@@ -1265,11 +1336,13 @@ function registerSW() {
 }
 
 /* ---------- Init ---------- */
-function init() {
+function bootApp() {
   load();
   $('#todayDate').textContent = formatDate(new Date());
   setupTabs();
   setupEvents();
+  const btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) btnLogout.addEventListener('click', logout);
   renderToday();
   renderFoods();
   registerSW();
@@ -1285,6 +1358,17 @@ function init() {
   const params = new URLSearchParams(location.search);
   if (params.get('action') === 'scan') {
     setTimeout(() => openScanModal('register'), 400);
+  }
+}
+
+function init() {
+  setupLogin(bootApp);
+  const auth = loadAuth();
+  if (auth?.user) {
+    hideLogin();
+    bootApp();
+  } else {
+    showLogin();
   }
 }
 
