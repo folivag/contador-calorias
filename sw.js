@@ -1,11 +1,12 @@
 /* Service Worker — Contador de Calorías
    Estrategia:
-   - App shell (HTML/CSS/JS/manifest/icon): cache-first con actualización en background.
-   - ZXing (CDN): cache-first después del primer load.
+   - HTML (navegación): network-first → ve cambios al primer reload con red.
+   - CSS/JS/manifest/iconos: stale-while-revalidate.
+   - ZXing (CDN): stale-while-revalidate.
    - APIs (Anthropic, Open Food Facts): pasan directo a la red (no se cachean).
 */
 
-const CACHE = 'cal-counter-v2';
+const CACHE = 'cal-counter-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -31,6 +32,11 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Permite que el cliente fuerce la activación inmediata de un SW nuevo.
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
+});
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -44,10 +50,26 @@ self.addEventListener('fetch', (event) => {
     url.host.includes('static.openfoodfacts.org') ||
     url.host.includes('images.openfoodfacts.org')
   ) {
-    return; // pasa a la red por defecto
+    return;
   }
 
-  // Stale-while-revalidate para todo lo demás (incluye ZXing CDN)
+  // Network-first para navegación (HTML) — así los updates se ven al primer reload.
+  if (req.mode === 'navigate' || (req.destination === 'document')) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res && res.status === 200) {
+            const clone = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, clone)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => caches.match(req).then((cached) => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Stale-while-revalidate para el resto (CSS/JS/imágenes/CDN)
   event.respondWith(
     caches.match(req).then((cached) => {
       const fetchPromise = fetch(req)
