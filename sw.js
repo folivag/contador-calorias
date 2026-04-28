@@ -6,7 +6,7 @@
    - APIs (Anthropic, Open Food Facts): pasan directo a la red (no se cachean).
 */
 
-const CACHE = 'cal-counter-v3';
+const CACHE = 'cal-counter-v5';
 const APP_SHELL = [
   './',
   './index.html',

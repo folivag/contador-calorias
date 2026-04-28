@@ -9,6 +9,56 @@ const DEFAULT_GOALS = { calories: 2000, protein: 150, carbs: 250, fat: 65 };
 const DEFAULT_REMINDERS = { enabled: false, time: '21:00', dismissedDate: '' };
 const DEFAULT_BODY = { sex: 'male', age: 30, weight: 70, height: 170, activity: 1.55, goal: 'maintain', proteinRatio: 1.8 };
 
+/* Catálogo de alimentos comunes (datos USDA/CIQUAL aproximados).
+   Macros expresados para la porción indicada. */
+const SEED_FOODS = [
+  // Proteínas
+  { name: 'Pollo pechuga cocida', portion: 100, unit: 'g', calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+  { name: 'Carne molida de res 5%', portion: 100, unit: 'g', calories: 137, protein: 21, carbs: 0, fat: 5 },
+  { name: 'Salmón cocido', portion: 100, unit: 'g', calories: 208, protein: 22, carbs: 0, fat: 13 },
+  { name: 'Atún en agua (escurrido)', portion: 100, unit: 'g', calories: 116, protein: 26, carbs: 0, fat: 1 },
+  { name: 'Huevo entero', portion: 1, unit: 'unidad', calories: 72, protein: 6.3, carbs: 0.4, fat: 4.8 },
+  { name: 'Clara de huevo', portion: 1, unit: 'unidad', calories: 17, protein: 3.6, carbs: 0.2, fat: 0.06 },
+  // Lácteos
+  { name: 'Leche descremada', portion: 200, unit: 'ml', calories: 70, protein: 7, carbs: 10, fat: 0.4 },
+  { name: 'Yogur griego natural', portion: 100, unit: 'g', calories: 97, protein: 9, carbs: 3.6, fat: 5 },
+  { name: 'Yogur natural', portion: 100, unit: 'g', calories: 60, protein: 4, carbs: 7, fat: 1.5 },
+  { name: 'Quesillo', portion: 100, unit: 'g', calories: 130, protein: 16, carbs: 3, fat: 6 },
+  // Carbohidratos
+  { name: 'Arroz blanco cocido', portion: 100, unit: 'g', calories: 130, protein: 2.7, carbs: 28, fat: 0.3 },
+  { name: 'Arroz integral cocido', portion: 100, unit: 'g', calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
+  { name: 'Pasta cocida', portion: 100, unit: 'g', calories: 158, protein: 5.8, carbs: 31, fat: 0.9 },
+  { name: 'Pan integral', portion: 1, unit: 'unidad', calories: 80, protein: 4, carbs: 14, fat: 1 },
+  { name: 'Avena cruda', portion: 40, unit: 'g', calories: 152, protein: 6, carbs: 27, fat: 3 },
+  { name: 'Papa cocida', portion: 100, unit: 'g', calories: 87, protein: 1.9, carbs: 20, fat: 0.1 },
+  { name: 'Camote cocido', portion: 100, unit: 'g', calories: 86, protein: 1.6, carbs: 20, fat: 0.1 },
+  { name: 'Quinoa cocida', portion: 100, unit: 'g', calories: 120, protein: 4.4, carbs: 21, fat: 1.9 },
+  // Frutas
+  { name: 'Plátano', portion: 1, unit: 'unidad', calories: 105, protein: 1.3, carbs: 27, fat: 0.4 },
+  { name: 'Manzana', portion: 1, unit: 'unidad', calories: 95, protein: 0.5, carbs: 25, fat: 0.3 },
+  { name: 'Naranja', portion: 1, unit: 'unidad', calories: 65, protein: 1.3, carbs: 16, fat: 0.2 },
+  { name: 'Palta', portion: 100, unit: 'g', calories: 160, protein: 2, carbs: 9, fat: 15 },
+  { name: 'Frutillas', portion: 100, unit: 'g', calories: 32, protein: 0.7, carbs: 8, fat: 0.3 },
+  { name: 'Arándanos', portion: 100, unit: 'g', calories: 57, protein: 0.7, carbs: 14, fat: 0.3 },
+  // Verduras
+  { name: 'Tomate', portion: 100, unit: 'g', calories: 18, protein: 0.9, carbs: 4, fat: 0.2 },
+  { name: 'Lechuga', portion: 100, unit: 'g', calories: 15, protein: 1.4, carbs: 2.9, fat: 0.2 },
+  { name: 'Pepino', portion: 100, unit: 'g', calories: 16, protein: 0.7, carbs: 3.6, fat: 0.1 },
+  { name: 'Zanahoria', portion: 100, unit: 'g', calories: 41, protein: 0.9, carbs: 10, fat: 0.2 },
+  { name: 'Brócoli cocido', portion: 100, unit: 'g', calories: 35, protein: 2.4, carbs: 7, fat: 0.4 },
+  { name: 'Espinaca cruda', portion: 100, unit: 'g', calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4 },
+  // Legumbres
+  { name: 'Lentejas cocidas', portion: 100, unit: 'g', calories: 116, protein: 9, carbs: 20, fat: 0.4 },
+  { name: 'Porotos negros cocidos', portion: 100, unit: 'g', calories: 132, protein: 9, carbs: 24, fat: 0.5 },
+  { name: 'Garbanzos cocidos', portion: 100, unit: 'g', calories: 164, protein: 9, carbs: 27, fat: 2.6 },
+  // Frutos secos / grasas
+  { name: 'Almendras', portion: 30, unit: 'g', calories: 174, protein: 6, carbs: 6, fat: 15 },
+  { name: 'Maní', portion: 30, unit: 'g', calories: 170, protein: 7, carbs: 6, fat: 14 },
+  { name: 'Aceite de oliva', portion: 1, unit: 'cda', calories: 124, protein: 0, carbs: 0, fat: 14 },
+  { name: 'Mantequilla de maní', portion: 1, unit: 'cda', calories: 95, protein: 4, carbs: 3, fat: 8 },
+  { name: 'Chocolate negro 70%', portion: 20, unit: 'g', calories: 120, protein: 1.6, carbs: 9, fat: 9 },
+];
+
 const state = {
   foods: [],
   log: {},
@@ -119,6 +169,38 @@ function logout() {
   if (!confirm('¿Cerrar sesión?')) return;
   clearAuth();
   location.reload();
+}
+
+/* ---------- Seed catalog ---------- */
+function importSeedCatalog() {
+  const existing = new Set(state.foods.map(f => f.name.trim().toLowerCase()));
+  let added = 0;
+  const now = Date.now();
+  SEED_FOODS.forEach(seed => {
+    if (existing.has(seed.name.trim().toLowerCase())) return;
+    state.foods.push({
+      id: uid(),
+      name: seed.name,
+      portion: seed.portion,
+      unit: seed.unit,
+      calories: seed.calories,
+      protein: seed.protein,
+      carbs: seed.carbs,
+      fat: seed.fat,
+      photo: '',
+      barcode: '',
+      updatedAt: now,
+    });
+    added++;
+  });
+  if (added > 0) {
+    save();
+    renderFoods();
+    toast(`${added} alimentos agregados al catálogo`, 'success');
+  } else {
+    toast('Ya tienes todos los alimentos del catálogo', 'info');
+  }
+  return added;
 }
 
 /* ---------- Helpers ---------- */
@@ -844,10 +926,15 @@ async function handleAIClick() {
 }
 
 /* ---------- Modal: Log (add to meal) ---------- */
+let logOffSearchTimer = null;
+let logOffSearchToken = 0;
+let lastLogOffQuery = '';
+
 function openLogModal(meal) {
   state.currentMeal = meal;
   $('#modalLogMeal').textContent = meal;
   $('#logSearch').value = '';
+  lastLogOffQuery = '';
   renderLogFoodsList('');
   $('#modalLog').classList.remove('hidden');
   setTimeout(() => $('#logSearch').focus(), 100);
@@ -855,31 +942,160 @@ function openLogModal(meal) {
 
 function renderLogFoodsList(q) {
   const list = $('#logFoodsList');
-  list.innerHTML = '';
-  const query = q.trim().toLowerCase();
-  const items = state.foods
-    .filter(f => !query || f.name.toLowerCase().includes(query))
+  const query = q.trim();
+  const queryLow = query.toLowerCase();
+
+  const localItems = state.foods
+    .filter(f => !queryLow || f.name.toLowerCase().includes(queryLow))
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  if (items.length === 0) {
-    list.innerHTML = `<p class="empty">No hay alimentos. Crea uno en la pestaña <strong>Alimentos</strong>.</p>`;
-    return;
+  let html = '';
+
+  // Sección local
+  html += `<div class="log-section">`;
+  html += `<h4 class="log-section-head">Tus alimentos${localItems.length > 0 ? ` <span class="count">(${localItems.length})</span>` : ''}</h4>`;
+  if (localItems.length === 0) {
+    if (state.foods.length === 0) {
+      html += `<p class="log-section-empty">No hay alimentos guardados. Carga el catálogo básico desde la pestaña <strong>Alimentos</strong> o busca online abajo.</p>`;
+    } else {
+      html += `<p class="log-section-empty">Sin coincidencias locales.</p>`;
+    }
+  } else {
+    html += `<div class="log-section-body" id="logLocalBody"></div>`;
+  }
+  html += `</div>`;
+
+  // Sección online (solo si hay query >= 2 chars)
+  if (query.length >= 2) {
+    html += `<div class="log-section">`;
+    html += `<h4 class="log-section-head"><svg class="ico ico-sm"><use href="#i-search"/></svg> Open Food Facts <span class="count" id="logOffStatus">buscando…</span></h4>`;
+    html += `<div class="log-section-body" id="logOffBody"></div>`;
+    html += `</div>`;
   }
 
-  items.forEach(food => {
-    const item = document.createElement('div');
-    item.className = 'log-food-item';
-    item.innerHTML = `
-      <div class="log-food-thumb" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '<svg class="ico-thumb"><use href="#i-utensils"/></svg>'}</div>
-      <div>
-        <p class="log-food-info-name">${escapeHtml(food.name)}</p>
-        <p class="log-food-info-meta">${food.portion} ${food.unit} · P${Math.round(food.protein)} C${Math.round(food.carbs)} G${Math.round(food.fat)}</p>
-      </div>
-      <span class="log-food-cal">${Math.round(food.calories)} kcal</span>
-    `;
-    item.addEventListener('click', () => openAmountModal(food));
-    list.appendChild(item);
-  });
+  list.innerHTML = html;
+
+  // Render local items into placeholder
+  if (localItems.length > 0) {
+    const localBody = $('#logLocalBody');
+    localItems.forEach(food => {
+      localBody.appendChild(buildLocalLogItem(food));
+    });
+  }
+
+  // Trigger OFF search (debounced) when query is long enough
+  if (query.length >= 2) {
+    scheduleLogOffSearch(query);
+  } else {
+    if (logOffSearchTimer) clearTimeout(logOffSearchTimer);
+    lastLogOffQuery = '';
+  }
+}
+
+function buildLocalLogItem(food) {
+  const item = document.createElement('div');
+  item.className = 'log-food-item';
+  item.innerHTML = `
+    <div class="log-food-thumb" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '<svg class="ico-thumb"><use href="#i-utensils"/></svg>'}</div>
+    <div>
+      <p class="log-food-info-name">${escapeHtml(food.name)}</p>
+      <p class="log-food-info-meta">${food.portion} ${food.unit} · P${Math.round(food.protein)} C${Math.round(food.carbs)} G${Math.round(food.fat)}</p>
+    </div>
+    <span class="log-food-cal">${Math.round(food.calories)} kcal</span>
+  `;
+  item.addEventListener('click', () => openAmountModal(food));
+  return item;
+}
+
+function scheduleLogOffSearch(query) {
+  if (logOffSearchTimer) clearTimeout(logOffSearchTimer);
+  if (query === lastLogOffQuery) return;
+  logOffSearchTimer = setTimeout(() => runLogOffSearch(query), 450);
+}
+
+async function runLogOffSearch(query) {
+  const myToken = ++logOffSearchToken;
+  lastLogOffQuery = query;
+  const status = $('#logOffStatus');
+  const body = $('#logOffBody');
+  if (!status || !body) return;
+  status.textContent = 'buscando…';
+  body.innerHTML = '';
+
+  try {
+    const products = await searchOFFByName(query);
+    if (myToken !== logOffSearchToken) return; // resultados obsoletos
+
+    const valid = products.filter(p => {
+      const n = p.nutriments || {};
+      return (n['energy-kcal_100g'] || n.energy_100g) && (p.product_name_es || p.product_name);
+    }).slice(0, 12);
+
+    if (!valid.length) {
+      status.textContent = 'sin resultados';
+      body.innerHTML = `<p class="log-section-empty">Sin productos con datos nutricionales.</p>`;
+      return;
+    }
+
+    status.textContent = `${valid.length} ${valid.length === 1 ? 'resultado' : 'resultados'}`;
+    valid.forEach(p => body.appendChild(buildOffLogItem(p)));
+  } catch (err) {
+    if (myToken !== logOffSearchToken) return;
+    status.textContent = 'error de red';
+    body.innerHTML = `<p class="log-section-empty">No se pudo buscar online. Revisa tu conexión.</p>`;
+  }
+}
+
+function buildOffLogItem(p) {
+  const n = p.nutriments || {};
+  const cal = round(n['energy-kcal_100g'] || (n.energy_100g ? n.energy_100g / 4.184 : 0));
+  const item = document.createElement('div');
+  item.className = 'log-food-item log-food-item-off';
+  const name = p.product_name_es || p.product_name || 'Sin nombre';
+  const brand = p.brands ? `<span class="log-food-brand">${escapeHtml(p.brands.split(',')[0].trim())}</span>` : '';
+  item.innerHTML = `
+    <div class="log-food-thumb" ${p.image_front_small_url ? `style="background-image:url('${p.image_front_small_url}')"` : ''}>${p.image_front_small_url ? '' : '<svg class="ico-thumb"><use href="#i-utensils"/></svg>'}</div>
+    <div>
+      <p class="log-food-info-name">${escapeHtml(name)}</p>
+      <p class="log-food-info-meta">${brand}${brand ? ' · ' : ''}P${round(n.proteins_100g || 0)} C${round(n.carbohydrates_100g || 0)} G${round(n.fat_100g || 0)} (por 100g)</p>
+    </div>
+    <span class="log-food-cal">${cal} kcal</span>
+  `;
+  item.addEventListener('click', () => addOffProductAndLog(p));
+  return item;
+}
+
+async function addOffProductAndLog(p) {
+  const n = p.nutriments || {};
+  const name = (p.product_name_es || p.product_name || 'Sin nombre').trim();
+  const code = p.code || '';
+
+  // Si ya existe (por código de barras), usa ese; si no, crea
+  let food = code ? state.foods.find(f => f.barcode === code) : null;
+  if (!food) {
+    let photo = '';
+    if (p.image_front_small_url || p.image_front_url) {
+      photo = await urlToDataURL(p.image_front_small_url || p.image_front_url);
+    }
+    food = {
+      id: uid(),
+      name,
+      barcode: code,
+      portion: 100,
+      unit: 'g',
+      calories: round(n['energy-kcal_100g'] || (n.energy_100g ? n.energy_100g / 4.184 : 0)),
+      protein: round(n.proteins_100g || 0),
+      carbs: round(n.carbohydrates_100g || 0),
+      fat: round(n.fat_100g || 0),
+      photo,
+      updatedAt: Date.now(),
+    };
+    state.foods.push(food);
+    save();
+    renderFoods();
+  }
+
+  openAmountModal(food);
 }
 
 /* ---------- Modal: Amount ---------- */
@@ -1246,6 +1462,8 @@ function setupEvents() {
   // Foods tab
   $('#btnNewFood').addEventListener('click', () => openFoodModal());
   $('#btnScan').addEventListener('click', () => openScanModal('register'));
+  $('#btnLoadCatalog').addEventListener('click', importSeedCatalog);
+  $('#btnLoadCatalogEmpty').addEventListener('click', importSeedCatalog);
   $('#btnScanInModal').addEventListener('click', () => openScanModal('register'));
   $('#btnScanInLog').addEventListener('click', () => openScanModal('log', state.currentMeal));
   $('#btnSearchOFF').addEventListener('click', openOffSearchModal);

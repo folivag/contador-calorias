@@ -580,6 +580,16 @@ button { font-family: inherit; }
   gap: 8px;
   margin-bottom: 18px;
   align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.toolbar input[type="search"] { min-width: 0; }
+
+@media (max-width: 540px) {
+  .toolbar input[type="search"] { flex: 1 1 100%; }
+  .toolbar .btn-label { display: none; }
+  .toolbar #btnLoadCatalog,
+  .toolbar #btnScan { padding-left: 14px; padding-right: 14px; }
 }
 
 .toolbar input[type="search"] {
@@ -683,12 +693,20 @@ button { font-family: inherit; }
 .empty {
   text-align: center;
   color: var(--text-muted);
-  padding: 48px 24px;
+  padding: 36px 24px;
   font-size: 14px;
   background: var(--surface);
   border: 1px dashed var(--border-strong);
   border-radius: var(--radius-lg);
 }
+
+.empty p { margin: 0 0 16px; }
+.empty .empty-sub {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.empty .empty-sub strong { color: var(--text-dim); }
 
 /* ============================================================
    Stats
@@ -1321,6 +1339,53 @@ select {
 
 .log-foods-list {
   padding: 14px;
+}
+
+.log-section + .log-section { margin-top: 18px; }
+
+.log-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.log-section-head .count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.log-section-head .ico { color: var(--primary); }
+
+.log-section-empty {
+  margin: 0 4px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.log-food-item-off { background: linear-gradient(180deg, transparent, var(--primary-bg-soft)); }
+.log-food-item-off:hover {
+  background: var(--primary-bg-soft);
+  border-color: var(--primary-bg);
+}
+.log-food-brand {
+  color: var(--text-dim);
+  font-weight: 600;
 }
 
 .log-food-item {
