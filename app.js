@@ -444,7 +444,7 @@ function renderOffResults(products) {
     item.className = 'off-result';
     const name = p.product_name_es || p.product_name || 'Sin nombre';
     item.innerHTML = `
-      <div class="off-thumb" ${p.image_front_small_url ? `style="background-image:url('${p.image_front_small_url}')"` : ''}>${p.image_front_small_url ? '' : '🍽️'}</div>
+      <div class="off-thumb" ${p.image_front_small_url ? `style="background-image:url('${p.image_front_small_url}')"` : ''}>${p.image_front_small_url ? '' : '<svg class="ico-thumb"><use href="#i-utensils"/></svg>'}</div>
       <div class="off-info">
         <p class="off-name">${escapeHtml(name)}</p>
         ${p.brands ? `<p class="off-brand">${escapeHtml(p.brands)}</p>` : ''}
@@ -507,7 +507,7 @@ function fillFoodForm(data) {
 async function aiCalculateMacros(name, portion, unit) {
   const apiKey = state.settings.apiKey;
   if (!apiKey) {
-    throw new Error('Configura tu API Key en ⚙ para usar IA');
+    throw new Error('Configura tu API Key en Configuración para usar IA');
   }
   const prompt = `Eres un experto en nutrición. Para el alimento "${name}" en una porción de ${portion} ${unit}, devuelve SOLO un JSON con valores nutricionales estimados promedio (sin texto adicional). Formato exacto:
 {"calories": <kcal>, "protein": <g>, "carbs": <g>, "fat": <g>}
@@ -579,14 +579,14 @@ function renderToday() {
       const li = document.createElement('li');
       li.className = 'meal-item';
       li.innerHTML = `
-        <div class="meal-item-thumb" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '🍽️'}</div>
+        <div class="meal-item-thumb" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '<svg class="ico-thumb"><use href="#i-utensils"/></svg>'}</div>
         <div class="meal-item-info">
           <div class="meal-item-name">${escapeHtml(food.name)}</div>
           <div class="meal-item-meta">${round(entry.amount)} ${food.unit}</div>
         </div>
         <div class="meal-item-actions">
           <span class="meal-item-cal">${Math.round(cal)} kcal</span>
-          <button class="meal-item-del" data-entry="${entry.id}" aria-label="Eliminar">✕</button>
+          <button class="meal-item-del" data-entry="${entry.id}" aria-label="Eliminar"><svg class="ico ico-sm"><use href="#i-x"/></svg></button>
         </div>
       `;
       ul.appendChild(li);
@@ -647,7 +647,7 @@ function renderFoods(filter = '') {
     const card = document.createElement('div');
     card.className = 'food-card';
     card.innerHTML = `
-      <div class="food-photo" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '🍽️'}</div>
+      <div class="food-photo" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '<svg class="ico-thumb"><use href="#i-utensils"/></svg>'}</div>
       <div class="food-info">
         <p class="food-name">${escapeHtml(food.name)}</p>
         <p class="food-portion">${food.portion} ${food.unit}</p>
@@ -870,7 +870,7 @@ function renderLogFoodsList(q) {
     const item = document.createElement('div');
     item.className = 'log-food-item';
     item.innerHTML = `
-      <div class="log-food-thumb" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '🍽️'}</div>
+      <div class="log-food-thumb" ${food.photo ? `style="background-image:url('${food.photo}')"` : ''}>${food.photo ? '' : '<svg class="ico-thumb"><use href="#i-utensils"/></svg>'}</div>
       <div>
         <p class="log-food-info-name">${escapeHtml(food.name)}</p>
         <p class="log-food-info-meta">${food.portion} ${food.unit} · P${Math.round(food.protein)} C${Math.round(food.carbs)} G${Math.round(food.fat)}</p>

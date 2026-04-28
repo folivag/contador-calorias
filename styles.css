@@ -275,6 +275,12 @@ button { font-family: inherit; }
   animation: slideUp 0.3s var(--ease-out);
 }
 
+.reminder-banner > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .reminder-banner .icon-btn { color: var(--warning); }
 
 /* ============================================================
@@ -466,6 +472,10 @@ button { font-family: inherit; }
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
   min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
 }
 
 .add-meal-btn:hover {
@@ -1639,6 +1649,38 @@ select {
   from { transform: translate(-50%, 24px); opacity: 0; }
   to { transform: translate(-50%, 0); opacity: 1; }
 }
+
+/* ============================================================
+   Icons (Lucide sprite)
+   ============================================================ */
+.ico {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: -4px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ico-sm { width: 16px; height: 16px; vertical-align: -3px; }
+.ico-lg { width: 24px; height: 24px; vertical-align: -5px; }
+.ico-thumb {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+.icon-btn .ico,
+.icon-btn-square .ico { vertical-align: middle; }
+.meal-head h3 .ico { color: var(--primary); }
+.meal-head h3 .ico { width: 20px; height: 20px; vertical-align: -4px; }
 
 /* ============================================================
    Utilities

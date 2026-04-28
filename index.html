@@ -34,6 +34,54 @@
   </script>
 </head>
 <body>
+  <!-- ========== ICON SPRITE (Lucide) ========== -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-sunrise" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>
+      </symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+      </symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+      </symbol>
+      <symbol id="i-apple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>
+      </symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>
+      </symbol>
+      <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </symbol>
+      <symbol id="i-calculator" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+      </symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+      </symbol>
+      <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+      </symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"/><path d="M12 5v14"/>
+      </symbol>
+      <symbol id="i-utensils" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+      </symbol>
+    </defs>
+  </svg>
+
   <!-- ========== LOGIN SCREEN ========== -->
   <div id="loginScreen" class="login-screen">
     <div class="login-bg-orb orb-a"></div>
@@ -96,8 +144,8 @@
     </div>
     <div class="header-actions">
       <span id="todayDate" class="today-date"></span>
-      <button id="btnSettings" class="icon-btn" title="Configuración" aria-label="Configuración">⚙</button>
-      <button id="btnLogout" class="icon-btn" title="Cerrar sesión" aria-label="Cerrar sesión">⏻</button>
+      <button id="btnSettings" class="icon-btn" title="Configuración" aria-label="Configuración"><svg class="ico"><use href="#i-settings"/></svg></button>
+      <button id="btnLogout" class="icon-btn" title="Cerrar sesión" aria-label="Cerrar sesión"><svg class="ico"><use href="#i-logout"/></svg></button>
     </div>
   </header>
 
@@ -111,8 +159,8 @@
     <!-- ========== TAB: HOY ========== -->
     <section id="tab-hoy" class="tab-content active">
       <div id="reminderBanner" class="reminder-banner hidden">
-        <span>📌 No has registrado nada hoy todavía</span>
-        <button id="btnDismissReminder" class="icon-btn">✕</button>
+        <span><svg class="ico ico-sm"><use href="#i-bell"/></svg>No has registrado nada hoy todavía</span>
+        <button id="btnDismissReminder" class="icon-btn" aria-label="Descartar"><svg class="ico"><use href="#i-x"/></svg></button>
       </div>
       <div class="day-summary">
         <div class="ring-wrap">
@@ -160,29 +208,29 @@
       <div class="meals">
         <div class="meal" data-meal="desayuno">
           <div class="meal-head">
-            <h3>🌅 Desayuno</h3>
-            <button class="add-meal-btn" data-meal="desayuno">+ Agregar</button>
+            <h3><svg class="ico"><use href="#i-sunrise"/></svg>Desayuno</h3>
+            <button class="add-meal-btn" data-meal="desayuno"><svg class="ico ico-sm"><use href="#i-plus"/></svg>Agregar</button>
           </div>
           <ul class="meal-items" id="meal-desayuno"></ul>
         </div>
         <div class="meal" data-meal="almuerzo">
           <div class="meal-head">
-            <h3>☀️ Almuerzo</h3>
-            <button class="add-meal-btn" data-meal="almuerzo">+ Agregar</button>
+            <h3><svg class="ico"><use href="#i-sun"/></svg>Almuerzo</h3>
+            <button class="add-meal-btn" data-meal="almuerzo"><svg class="ico ico-sm"><use href="#i-plus"/></svg>Agregar</button>
           </div>
           <ul class="meal-items" id="meal-almuerzo"></ul>
         </div>
         <div class="meal" data-meal="cena">
           <div class="meal-head">
-            <h3>🌙 Cena</h3>
-            <button class="add-meal-btn" data-meal="cena">+ Agregar</button>
+            <h3><svg class="ico"><use href="#i-moon"/></svg>Cena</h3>
+            <button class="add-meal-btn" data-meal="cena"><svg class="ico ico-sm"><use href="#i-plus"/></svg>Agregar</button>
           </div>
           <ul class="meal-items" id="meal-cena"></ul>
         </div>
         <div class="meal" data-meal="snack">
           <div class="meal-head">
-            <h3>🍎 Snacks</h3>
-            <button class="add-meal-btn" data-meal="snack">+ Agregar</button>
+            <h3><svg class="ico"><use href="#i-apple"/></svg>Snacks</h3>
+            <button class="add-meal-btn" data-meal="snack"><svg class="ico ico-sm"><use href="#i-plus"/></svg>Agregar</button>
           </div>
           <ul class="meal-items" id="meal-snack"></ul>
         </div>
@@ -193,8 +241,8 @@
     <section id="tab-alimentos" class="tab-content">
       <div class="toolbar">
         <input id="searchFoods" type="search" placeholder="Buscar alimento..." />
-        <button id="btnScan" class="secondary-btn" title="Escanear código de barras">📷 Escanear</button>
-        <button id="btnNewFood" class="primary-btn">+ Nuevo</button>
+        <button id="btnScan" class="secondary-btn" title="Escanear código de barras"><svg class="ico ico-sm"><use href="#i-camera"/></svg>Escanear</button>
+        <button id="btnNewFood" class="primary-btn"><svg class="ico ico-sm"><use href="#i-plus"/></svg>Nuevo</button>
       </div>
       <div id="foodsList" class="foods-grid"></div>
       <p id="emptyFoods" class="empty hidden">
@@ -228,7 +276,7 @@
     <div class="modal-content">
       <header class="modal-head">
         <h2 id="modalFoodTitle">Nuevo alimento</h2>
-        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+        <button class="icon-btn close-modal" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <form id="formFood">
         <input type="hidden" id="foodId" />
@@ -236,7 +284,7 @@
         <label class="photo-picker">
           <span>Foto</span>
           <div id="photoPreview" class="photo-preview">
-            <span>📷 Toca para agregar foto</span>
+            <span><svg class="ico"><use href="#i-camera"/></svg>Toca para agregar foto</span>
           </div>
           <input type="file" id="foodPhoto" accept="image/*" capture="environment" />
         </label>
@@ -250,7 +298,7 @@
           <span>Código de barras <span class="optional">(opcional)</span></span>
           <div class="barcode-row">
             <input type="text" id="foodBarcode" placeholder="Vacío o escanea desde la lista" />
-            <button type="button" id="btnScanInModal" class="icon-btn-square" title="Escanear">📷</button>
+            <button type="button" id="btnScanInModal" class="icon-btn-square" title="Escanear" aria-label="Escanear"><svg class="ico"><use href="#i-camera"/></svg></button>
           </div>
         </label>
 
@@ -273,8 +321,8 @@
         </div>
 
         <div class="ai-row">
-          <button type="button" id="btnAI" class="ai-btn">✨ Calcular macros con IA</button>
-          <button type="button" id="btnSearchOFF" class="off-btn">🔍 Buscar en Open Food Facts</button>
+          <button type="button" id="btnAI" class="ai-btn"><svg class="ico ico-sm"><use href="#i-sparkles"/></svg>Calcular macros con IA</button>
+          <button type="button" id="btnSearchOFF" class="off-btn"><svg class="ico ico-sm"><use href="#i-search"/></svg>Buscar en Open Food Facts</button>
         </div>
         <p id="aiStatus" class="ai-status"></p>
 
@@ -313,16 +361,16 @@
     <div class="modal-content">
       <header class="modal-head">
         <h2>Agregar a <span id="modalLogMeal">—</span></h2>
-        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+        <button class="icon-btn close-modal" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <div class="log-search-wrap">
         <div class="log-search-row">
           <input id="logSearch" type="search" placeholder="Buscar alimento registrado..." autofocus />
-          <button id="btnScanInLog" class="icon-btn-square" title="Escanear y agregar">📷</button>
+          <button id="btnScanInLog" class="icon-btn-square" title="Escanear y agregar" aria-label="Escanear y agregar"><svg class="ico"><use href="#i-camera"/></svg></button>
         </div>
       </div>
       <div id="logFoodsList" class="log-foods-list"></div>
-      <p class="log-hint">Selecciona un alimento, luego ajusta la cantidad.<br><small>O escanea 📷 para agregar un producto nuevo directo al diario.</small></p>
+      <p class="log-hint">Selecciona un alimento, luego ajusta la cantidad.<br><small>O usa el botón <svg class="ico ico-sm" style="vertical-align:-3px"><use href="#i-camera"/></svg> para agregar un producto nuevo directo al diario.</small></p>
     </div>
   </div>
 
@@ -331,7 +379,7 @@
     <div class="modal-content small">
       <header class="modal-head">
         <h2 id="modalAmountTitle">Cantidad</h2>
-        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+        <button class="icon-btn close-modal" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <form id="formAmount">
         <input type="hidden" id="amountFoodId" />
@@ -364,11 +412,11 @@
     <div class="modal-content">
       <header class="modal-head">
         <h2>Configuración</h2>
-        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+        <button class="icon-btn close-modal" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <form id="formSettings">
         <h3>Objetivos diarios</h3>
-        <button type="button" id="btnOpenCalc" class="calc-btn">📊 Calcular automáticamente según mi cuerpo</button>
+        <button type="button" id="btnOpenCalc" class="calc-btn"><svg class="ico ico-sm"><use href="#i-calculator"/></svg>Calcular automáticamente según mi cuerpo</button>
         <div class="row">
           <label>
             <span>Calorías</span>
@@ -438,7 +486,7 @@
     <div class="modal-content">
       <header class="modal-head">
         <h2>Buscar en Open Food Facts</h2>
-        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+        <button class="icon-btn close-modal" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <div class="off-search-body">
         <div class="off-search-row">
@@ -456,7 +504,7 @@
     <div class="modal-content scan-modal">
       <header class="modal-head">
         <h2>Escanear código de barras</h2>
-        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+        <button class="icon-btn close-modal" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <div class="scan-body">
         <div class="scan-video-wrap">
@@ -485,7 +533,7 @@
     <div class="modal-content">
       <header class="modal-head">
         <h2>Calcular objetivos</h2>
-        <button class="icon-btn close-modal" aria-label="Cerrar">✕</button>
+        <button class="icon-btn close-modal" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
       </header>
       <form id="formCalc">
         <p class="settings-hint">Usa la fórmula Mifflin-St Jeor para calcular tu BMR y TDEE, y reparte los macros según tu meta.</p>
